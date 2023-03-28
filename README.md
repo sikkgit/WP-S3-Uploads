@@ -258,6 +258,38 @@ if you want to develop offline you have a couple of options.
 Option 2 will allow you to run the S3 Uploads plugin for production parity purposes, it will essentially mock
 Amazon S3 with a local stream wrapper and actually store the uploads in your WP Upload Dir `/s3/`.
 
+## Compatibility with Cloudflare R2
+
+              Adding some insight into this. So far this plugin is working well with R2. The only trouble I had was that the default ACL set on upload was not accepted by R2. Looking closer in the [R2 docs](https://developers.cloudflare.com/r2/data-access/s3-api/api/) it is clear that setting ACL on upload is not supported. However setting the value to private will make it work. 
+
+Following the plugin docs, this is pretty straight-forward:
+
+`define("S3_UPLOADS_OBJECT_ACL", "private");`
+
+Also remember to set the custom endpoint pointing to R2 instead of AWS and tell the client use path style endpoint. Do this in the s3_uploads_s3_client_params filter according to the plugin docs. I defined the endpoint in a constant.
+
+```
+function tw_s3_uploads_s3_client_params( $params ) {
+    $params["endpoint"] = S3_UPLOADS_ENDPOINT;
+    $params["use_path_style_endpoint"] = true;
+    return $params;
+}
+
+add_filter( "s3_uploads_s3_client_params", "tw_s3_uploads_s3_client_params");
+```
+Providing a full example of defined constants. For some context check out an [example](https://developers.cloudflare.com/r2/examples/aws-sdk-php/) from CF on how to utilize the aws-sdk for PHP:
+
+```
+define("S3_UPLOADS_ENDPOINT", "https://<Cloudflare account ID>.r2.cloudflarestorage.com")
+define("S3_UPLOADS_BUCKET", "<R2 bucket Name>")
+define("S3_UPLOADS_BUCKET_URL", "<R2 bucket public url or domain>")
+define("S3_UPLOADS_REGION", "auto")
+define("S3_UPLOADS_KEY", "<R2 access key ID>")
+define("S3_UPLOADS_SECRET", "<R2 secret access key>")
+```
+
+_Originally posted by @tedyw in https://github.com/humanmade/S3-Uploads/issues/576#issuecomment-1279784691_       
+
 ## Credits
 
 Created by Human Made for high volume and large-scale sites. We run S3 Uploads on sites with millions of monthly page views, and thousands of sites.
