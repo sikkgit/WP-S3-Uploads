@@ -260,7 +260,7 @@ Amazon S3 with a local stream wrapper and actually store the uploads in your WP 
 
 ## Compatibility with Cloudflare R2
 
-              Adding some insight into this. So far this plugin is working well with R2. The only trouble I had was that the default ACL set on upload was not accepted by R2. Looking closer in the [R2 docs](https://developers.cloudflare.com/r2/data-access/s3-api/api/) it is clear that setting ACL on upload is not supported. However setting the value to private will make it work. 
+Adding some insight into this. So far this plugin is working well with R2. The only trouble I had was that the default ACL set on upload was not accepted by R2. Looking closer in the [R2 docs](https://developers.cloudflare.com/r2/data-access/s3-api/api/) it is clear that setting ACL on upload is not supported. However setting the value to private will make it work. 
 
 Following the plugin docs, this is pretty straight-forward:
 
